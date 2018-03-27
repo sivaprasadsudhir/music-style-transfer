@@ -1,0 +1,81 @@
+\documentclass{article}
+
+% if you need to pass options to natbib, use, e.g.:
+% \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading nips_2017
+%
+% to avoid loading the natbib package, add option nonatbib:
+% \usepackage[nonatbib]{nips_2017}
+
+\usepackage{nips_2017}
+\usepackage{etoolbox}
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+% \usepackage[final]{nips_2017}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+\title{Style Transfer for Music}
+
+\author{
+  Anshu Aviral\\
+%   Carnegie Mellon University\\
+  \texttt{aanshu@andrew.cmu.edu} \\
+  %% examples of more authors
+  \And
+  Justin Wang\\
+  %   Carnegie Mellon University\\
+  \texttt{jcwang1@andrew.cmu.edu} \\
+  \And
+  Sivaprasad Sudhir\\
+%   Carnegie Mellon University\\
+  \texttt{sivapras@andrew.cmu.edu} 
+}
+
+\begin{document}
+% \nipsfinalcopy is no longer used
+
+\maketitle
+% \begin{abstract}
+%   The abstract paragraph should be indented \nicefrac{1}{2}~inch
+%   (3~picas) on both the left- and right-hand margins. Use 10~point
+%   type, with a vertical spacing (leading) of 11~points.  The word
+%   \textbf{Abstract} must be centered, bold, and in point size 12. Two
+%   line spaces precede the abstract. The abstract must be limited to
+%   one paragraph.
+% \end{abstract}
+\section{Problem Statement}
+
+Our goal is to solve a component of the problem of musical style transfer.  At it's most general, musical style transfer considers, if given two songs A and B, what a rendition of song A's ``content'' would sound like in the ``style'' of song B.  For example, if A is a pop song and B is a classical piece, the goal would be to create a ``classical'' version of A.
+
+Defining the ``style'' component of music can be done in an arbitrarily complex way. Thus, as an initial, simple approximation of style transfer, the goal of our project is to train a system that can take music played by one instrument (say, a piano playing the C-scale) and generate the equivalent music played by a different instrument (say, a violin playing the same).  That is, the notes played will be the ``content'', and the instrument will be the ``style''.
+
+\section{Related Work}
+Neural style transfer\cite{gea15} has become a popular technique in image style transfer artistic styles using convolutional neural networks. This was extended to transfer of style for audio using the log magnitude of Short Time Fourier Transform of the the audio with single convolutional layer in \cite{ulyanov}. \cite{me17} and \cite{vs18} extends this idea of using CNNs on various spectrogram representations of audio for style transfer. Google Brain's Magenta project \cite{magenta} explores the space of generation of art and music using machine intelligence. The work done as a part of the Magenta project does not directly try to solve the problem of style transfer, but discusses various representations of audio, autoencoder networks for audio synthesis \cite{engel2017neural}. 
+
+\section{Approach}
+
+An autoencoder takes input data in the form of vectors with high dimensionality and compresses it to a low-dimensional representation of the data, using a neural network called the encoder. This low-dimensional representation is known as the latent space. The autoencoder then tries to reconstruct the input from the latent space, using another neural network called the decoder. The neural network can be a sequence of fully connected or convolutional layers. The loss function for this autoencoder can be the difference between the reconstructed image and the input image.
+
+To simplify the disucssion, assume that we are trying to turn piano music into violin music. First, music is commonly represented in ``image'' form using what is known as a spectrogram.  Our core idea is to train, using spectrograms, an autoencoder for each instrument. We hypothesize that the latent space of the autoencoder captures the content, irrespective of the kind of instrument being played. Therefore, for any given piano music, the piano encoder would create a low dimensional encoding of the music played, and the violin decoder would generate output violin music from this encoding. Another possibility that we would like to explore is train the network using violin data and then use the piano sample as an input to it. 
+
+\section{Dataset}
+
+The dataset we plan to start with is the NSynth dataset\cite{nsynth2017}, provided by Google Magenta. Each sample in NSynth is a four second audio snippet, with a unique pitch, timbre, and envelope. The snippet is tagged with metadata, of which we will plan to focus on the instrument, pitch, and velocity features.  Though no individual snippet ever changes in pitch or is longer than four seconds, models trained on these snippets have been able to generate variable-pitch music of length longer than four seconds.
+
+\section{Project Road-map}
+
+Main focus of the project will be to achieve the transfer from piano to violin. Before the milestone submission we plan to verify our hypothesis and understand what the latent space represents. Before the final week, we plan to achieve our goal of converting audio from one instrument to another. An interesting and tougher problem that we would like to explore for the ``Wow'' goal is to achieve style transfer for music with multiple instruments possibly by separating various instruments, then changing the style and recombining them.
+
+\bibliographystyle{plain}
+\bibliography{references.bib}
+
+\end{document}
