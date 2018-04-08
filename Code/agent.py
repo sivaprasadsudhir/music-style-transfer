@@ -48,19 +48,25 @@ class Agent(object):
 		
 		if eval(self.params['load_weights']):
 			
-			model_load_file = self.trained_weights_path + 'model'
+			model_load_file = self.trained_weights_path + 'model_weights'
 			load_ckpt_number = self.params['load_ckpt_number']
 			if load_ckpt_number != 0:
-				model_load_file += str(load_ckpt_number)
+				model_load_file += '-' + str(load_ckpt_number)
 			model_load_file += '.h5'
+
+			pdb.set_trace()
 
 			self.network.load_model_weights(model_load_file,
 									self.trained_weights_path + 'encoder.h5',
 									self.trained_weights_path + 'decoder.h5')
 
+			pdb.set_trace()
+
 	def train(self):
 
 		print ('Training...')
+
+		pdb.set_trace()
 
 		filename = self.trained_weights_path + 'model_weights-{epoch:02d}.h5'
 		checkpoint = ModelCheckpoint(filename,
@@ -84,7 +90,10 @@ class Agent(object):
 		test_data = Spectrogram(filenames = [filename])
 		encoded_spectrogram = self.network.encoder.predict(test_data.spectrogram)
 		decoded_spectrogram = self.network.decoder.predict(encoded_spectrogram)
-		# print (encoded_spectrogram.shape)
-		# print (decoded_spectrogram.shape)
-		# print (encoded_spectrogram)
-		# print (decoded_spectrogram)
+
+		test_data.visualize(filename = filename, spectrogram = decoded_spectrogram )
+
+		print (encoded_spectrogram.shape)
+		print (decoded_spectrogram.shape)
+		print (encoded_spectrogram)
+		print (decoded_spectrogram)

@@ -2,6 +2,7 @@ from agent import Agent
 from utils import *
 
 import json
+import pdb
 
 def main(args):
 	# Parse command-line arguments.
@@ -17,6 +18,7 @@ def main(args):
 	if eval(params['train']):
 		agent.train()
 	else:
+		# pdb.set_trace()
 		agent.test(params['test_data_path'])
 
 if __name__ == '__main__':

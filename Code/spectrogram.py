@@ -1,7 +1,10 @@
+from matplotlib import pyplot as plt
 from scipy import signal
 from scipy.io import wavfile
 import sys, os
 import numpy as np
+
+import pdb
 
 class Spectrogram(object):
 
@@ -20,6 +23,7 @@ class Spectrogram(object):
 			sample_rate, samples = wavfile.read(fname)
 			frequencies, times, sgram = signal.spectrogram(samples, sample_rate)
 
+			# pdb.set_trace()
 			spectrogram.append(sgram)
 
 		spectrogram = np.array(spectrogram) / self.max_const
@@ -28,5 +32,24 @@ class Spectrogram(object):
 	def spectrogram_to_wav(self, spectrogram):
 
 		spectrogram *= self.max_const
+
+	def visualize(self, filename, spectrogram):
+		
+		sample_rate, samples = wavfile.read(filename)
+		frequencies, times, sgram = signal.spectrogram(samples, sample_rate)
+
+		spectrogram = np.reshape(spectrogram, (len(frequencies), len(times)))
+
+		plt.pcolormesh(times, frequencies, sgram)
+		plt.imshow(sgram)
+		plt.ylabel('Frequency [Hz]')
+		plt.xlabel('Time [sec]')
+		plt.savefig('original.png')
+
+		plt.pcolormesh(times, frequencies, spectrogram)
+		plt.imshow(spectrogram)
+		plt.ylabel('Frequency [Hz]')
+		plt.xlabel('Time [sec]')
+		plt.savefig('transformed.png')
 
 
