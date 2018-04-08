@@ -54,19 +54,11 @@ class Agent(object):
 				model_load_file += '-' + str(load_ckpt_number)
 			model_load_file += '.h5'
 
-			pdb.set_trace()
-
-			self.network.load_model_weights(model_load_file,
-									self.trained_weights_path + 'encoder.h5',
-									self.trained_weights_path + 'decoder.h5')
-
-			pdb.set_trace()
+			self.network.load_model_weights(model_load_file)
 
 	def train(self):
 
 		print ('Training...')
-
-		pdb.set_trace()
 
 		filename = self.trained_weights_path + 'model_weights-{epoch:02d}.h5'
 		checkpoint = ModelCheckpoint(filename,
@@ -81,9 +73,7 @@ class Agent(object):
 				callbacks = callbacks_list,
 				validation_data = (self.x_test, self.x_test))
 
-		self.network.save_model_weights(self.trained_weights_path + 'model_weights.h5',
-									self.trained_weights_path + 'encoder_weights.h5',
-									self.trained_weights_path + 'decoder_weights.h5')
+		self.network.save_model_weights(self.trained_weights_path + 'model_weights.h5')
 
 	def test(self, filename):
 		# print (filename)

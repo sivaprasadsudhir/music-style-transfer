@@ -65,15 +65,11 @@ class Autoencoder(object):
 		# create the decoder model
 		self.decoder = Model(encoded_input, decoded_output)
 
-	def save_model_weights(self, model_path, encoder_path, decoder_path):
+	def save_model_weights(self, model_path):
 		self.model.save_weights(model_path)
-		self.encoder.save_weights(encoder_path)
-		self.decoder.save_weights(decoder_path)
 
-	def load_model_weights(self, model_path, encoder_path, decoder_path):
+	def load_model_weights(self, model_path):
 		self.model.load_weights(model_path)
-		self.encoder.load_weights(encoder_path)
-		self.decoder.load_weights(decoder_path)
 
 	def save_model(self, model_path, encoder_path, decoder_path):
 		self.model.save(model_path)
