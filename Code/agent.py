@@ -60,11 +60,14 @@ class Agent(object):
 
 		print ('Training...')
 
-		filename = self.trained_weights_path + 'model_weights-{epoch:02d}.h5'
+		# pdb.set_trace()
+
+		# filename = self.trained_weights_path + 'model_weights-{}{epoch:02d}.h5'.format(100)
+		filename = self.trained_weights_path + 'model_weights-'+ str(self.params['load_ckpt_number']) + '-{epoch:02d}.h5'
 		checkpoint = ModelCheckpoint(filename,
-									 monitor='val_acc', verbose=1,
-									 mode='max', save_weights_only=True,
-									 period=self.params['save_epoch_period'])
+									monitor='val_acc', verbose=1,
+									mode='max', save_weights_only=True,
+									period=self.params['save_epoch_period'])
 		callbacks_list = [checkpoint]
 		self.network.model.fit(self.x_train, self.x_train,
 				epochs = self.params['num_epochs'],
