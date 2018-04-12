@@ -9,12 +9,12 @@ import pdb
 class Spectrogram(object):
 
 	def __init__(self, filenames = None, spectrogram = None):
-
-		self.max_const = 10e7
-		if filenames == None:
-			self.spectrogram_to_wav(spectrogram)
-		elif spectrogram == None:
-			self.wav_to_spectrogram(filenames)
+		pass
+		# self.max_const = 10e7
+		# if filenames == None:
+		# 	self.spectrogram_to_wav(spectrogram)
+		# elif spectrogram == None:
+		# 	self.wav_to_spectrogram(filenames)
 
 	def wav_to_spectrogram(self, filenames):
 		
@@ -33,23 +33,30 @@ class Spectrogram(object):
 
 		spectrogram *= self.max_const
 
-	def visualize(self, filename, spectrogram):
-		
+	def visualize(self, filename, spectrogram=None):
+		print filename
 		sample_rate, samples = wavfile.read(filename)
 		frequencies, times, sgram = signal.spectrogram(samples, sample_rate)
 
-		spectrogram = np.reshape(spectrogram, (len(frequencies), len(times)))
+		# print len(samples), sample_rate, len(frequencies), len(times), sgram.shape
+		# print len(samples)/sample_rate , (len(times) + 1) * (times[1] - times[0]), len(samples)/sample_rate == (len(times) + 1) * (times[1] - times[0])
+		# input ("Hello: ")
+
+		# spectrogram = np.reshape(spectrogram, (len(frequencies), len(times)))
 
 		plt.pcolormesh(times, frequencies, sgram)
 		plt.imshow(sgram)
 		plt.ylabel('Frequency [Hz]')
 		plt.xlabel('Time [sec]')
-		plt.savefig('original.png')
+		# plt.show()
+		f = filename.split('/')[-1]
+		print f
+		plt.savefig('../temp_storage/' + f[:-4] + '.png')
 
-		plt.pcolormesh(times, frequencies, spectrogram)
-		plt.imshow(spectrogram)
-		plt.ylabel('Frequency [Hz]')
-		plt.xlabel('Time [sec]')
-		plt.savefig('transformed.png')
+		# plt.pcolormesh(times, frequencies, spectrogram)
+		# plt.imshow(spectrogram)
+		# plt.ylabel('Frequency [Hz]')
+		# plt.xlabel('Time [sec]')
+		# plt.savefig('transformed.png')
 
 

@@ -25,3 +25,6 @@
 *.DS_Store
 *~
 *nsynth-train/*
+*pyc
+*magenta/*
+*spectrogram/*
