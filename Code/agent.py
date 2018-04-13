@@ -38,7 +38,6 @@ class Agent(object):
 		file_list = [os.path.join(self.params['data_path'], i) 
 				for i in file_list]
 
-		# print file_list
 		# file_list = ["../nsynth-train/keyboard_acoustic/keyboard_acoustic_000-021-025.wav"]
 
 		x_data = Spectrogram(filenames = file_list)
@@ -51,9 +50,6 @@ class Agent(object):
 
 		self.y_train = x_data.mallet[train_index]
 		self.y_test = x_data.mallet[test_index]
-		
-		# print len(self.x_train), len(self.x_test)
-
 		# self.x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
 		# self.x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
 	
