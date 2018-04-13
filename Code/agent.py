@@ -36,17 +36,23 @@ class Agent(object):
 
 		file_list = os.listdir(self.params['data_path'])
 		file_list = [os.path.join(self.params['data_path'], i) 
-				for i in file_list[:2]]
+				for i in file_list]
 
-		print file_list
+		# print file_list
 		# file_list = ["../nsynth-train/keyboard_acoustic/keyboard_acoustic_000-021-025.wav"]
 
 		x_data = Spectrogram(filenames = file_list)
 
-		self.x_train, self.x_test = train_test_split(x_data.spectrogram,
+		train_index, test_index = train_test_split(xrange(len(x_data.keyboard)),
 														test_size=0.3)
+
+		self.x_train = x_data.keyboard[train_index]
+		self.x_test = x_data.keyboard[test_index]
+
+		self.y_train = x_data.mallet[train_index]
+		self.y_test = x_data.mallet[test_index]
 		
-		print len(self.x_train), len(self.x_test)
+		# print len(self.x_train), len(self.x_test)
 
 		# self.x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
 		# self.x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
@@ -76,24 +82,24 @@ class Agent(object):
 									mode='max', save_weights_only=True,
 									period=self.params['save_epoch_period'])
 		callbacks_list = [checkpoint]
-		self.network.model.fit(self.x_train, self.x_train,
+		self.network.model.fit(self.x_train, self.y_train,
 				epochs = self.params['num_epochs'],
 				batch_size = 256,
 				shuffle = True,
 				callbacks = callbacks_list,
-				validation_data = (self.x_test, self.x_test))
+				validation_data = (self.x_test, self.y_test))
 
 		self.network.save_model_weights(self.trained_weights_path + 'model_weights.h5')
 
 	def test(self, filename):
 		# print (filename)
 		test_data = Spectrogram(filenames = [filename])
-		decoded_spectrogram = self.network.model.predict(test_data.spectrogram)
+		decoded_spectrogram = self.network.model.predict(test_data.keyboard)
 
 		# encoded_spectrogram = self.network.encoder.predict(test_data.spectrogram)
 		# decoded_spectrogram = self.network.decoder.predict(encoded_spectrogram)
-
-		test_data.visualize(filename = filename, spectrogram = decoded_spectrogram )
+		f = filename.replace("keyboard", "mallet", 2)
+		test_data.visualize(filename = f, spectrogram = decoded_spectrogram )
 
 		# print (encoded_spectrogram.shape)
 		# print (decoded_spectrogram.shape)
