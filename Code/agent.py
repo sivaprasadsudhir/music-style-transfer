@@ -23,7 +23,7 @@ class Agent(object):
 					load_path = self.params['trained_weights_path'])
 		else:
 			self.get_data()
-			self.network = Autoencoder(np.prod(self.x_train.shape[1:]), 
+			self.network = Autoencoder(self.x_train.shape[1:], 
 												params['learning_rate'])
 			self.network.save_model(self.trained_weights_path + 'model.h5',
 									self.trained_weights_path + 'encoder.h5',
@@ -35,12 +35,19 @@ class Agent(object):
 		print ('Reading Data...')
 
 		file_list = os.listdir(self.params['data_path'])
-		file_list = [os.path.join(self.params['data_path'], i) for i in file_list]
+		file_list = [os.path.join(self.params['data_path'], i) 
+				for i in file_list[:2]]
+
+		print file_list
+		# file_list = ["../nsynth-train/keyboard_acoustic/keyboard_acoustic_000-021-025.wav"]
 
 		x_data = Spectrogram(filenames = file_list)
 
-		self.x_train, self.x_test = train_test_split(x_data.spectrogram, test_size=0.3)
+		self.x_train, self.x_test = train_test_split(x_data.spectrogram,
+														test_size=0.3)
 		
+		print len(self.x_train), len(self.x_test)
+
 		# self.x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
 		# self.x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
 	
@@ -81,12 +88,14 @@ class Agent(object):
 	def test(self, filename):
 		# print (filename)
 		test_data = Spectrogram(filenames = [filename])
-		encoded_spectrogram = self.network.encoder.predict(test_data.spectrogram)
-		decoded_spectrogram = self.network.decoder.predict(encoded_spectrogram)
+		decoded_spectrogram = self.network.model.predict(test_data.spectrogram)
+
+		# encoded_spectrogram = self.network.encoder.predict(test_data.spectrogram)
+		# decoded_spectrogram = self.network.decoder.predict(encoded_spectrogram)
 
 		test_data.visualize(filename = filename, spectrogram = decoded_spectrogram )
 
-		print (encoded_spectrogram.shape)
-		print (decoded_spectrogram.shape)
-		print (encoded_spectrogram)
-		print (decoded_spectrogram)
+		# print (encoded_spectrogram.shape)
+		# print (decoded_spectrogram.shape)
+		# print (encoded_spectrogram)
+		# print (decoded_spectrogram)

@@ -26,5 +26,5 @@
 *~
 *nsynth-train/*
 *pyc
-*magenta/*
-*spectrogram/*
+*magenta*
+*spectrogram*
