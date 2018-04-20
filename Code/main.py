@@ -10,15 +10,14 @@ def main(args):
 
 	with open(args.config) as f:
 		params = json.load(f)
-	
+
 	create_folder(params['trained_weights_path'])
 
 	agent = Agent(params)
-	
+
 	if eval(params['train']):
 		agent.train()
 	else:
-		# pdb.set_trace()
 		agent.test(params['test_data_path'])
 
 if __name__ == '__main__':
