@@ -1,4 +1,4 @@
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 
 from autoencoder import Autoencoder
 from spectrogram import Spectrogram
@@ -36,7 +36,7 @@ class Agent(object):
 
 		file_list = os.listdir(self.params['data_path'])
 		file_list = [os.path.join(self.params['data_path'], i)
-				for i in file_list[:10]]
+				for i in file_list[5:15]]
 
 		print(file_list)
 
@@ -49,18 +49,23 @@ class Agent(object):
 
 		print ('Training...')
 
+		callbacks_list = [EarlyStopping()]
+
 		self.network.model.fit(self.x_train, self.x_train,
 		   			           epochs = self.params['num_epochs'],
 							   batch_size = 256,
 							   shuffle = True,
-							   validation_data = (self.x_test, self.x_test))
+							   validation_data = (self.x_test, self.x_test),
+							   callbacks=callbacks_list)
 
 		self.network.save_model_weights(self.trained_weights_path + 'model_weights.h5')
 
-	def test(self, filename):
-		test_data = Spectrogram(filenames = [filename])
-		decoded_spectrogram = self.network.model.predict(test_data.spectrogram)
-		print_summary(self.network.model, line_length=80)
+	def test(self, filenames):
+		filenames = filenames[5:15]
+		for filename in filenames:
+			test_data = Spectrogram(filenames=[filename])
+			decoded_spectrogram = self.network.model.predict(test_data.spectrogram)
+			#print_summary(self.network.model, line_length=80)
 
-		test_data.visualize(filename = filename,
-		                    spectrogram = decoded_spectrogram)
+			test_data.visualize(filename=filename,
+			                    spectrogram = decoded_spectrogram)

@@ -37,20 +37,21 @@ class Spectrogram(object):
 		sample_rate, samples = wavfile.read(filename)
 		frequencies, times, sgram = signal.spectrogram(samples, sample_rate)
 
-		plt.subplot(121)
+		ax = plt.subplot(121)
 		plt.pcolormesh(times, frequencies, sgram)
 		plt.imshow(sgram)
 		plt.ylabel('Frequency [Hz]')
 		plt.xlabel('Time [sec]')
-		plt.title("input")
+		ax.set_title("input")
 
 		spectrogram *= self.max_const
 		spectrogram = np.reshape(spectrogram, (len(frequencies), len(times)))
 
-		plt.subplot(122)
+		ax = plt.subplot(122)
 		plt.pcolormesh(times, frequencies, spectrogram)
 		plt.imshow(spectrogram)
 		plt.ylabel('Frequency [Hz]')
 		plt.xlabel('Time [sec]')
-		plt.title("output")
+		ax.set_title('output')
+		plt.suptitle("filename: {}".format(filename))
 		plt.show()
