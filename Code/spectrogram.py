@@ -237,31 +237,32 @@ class Spectrogram(object):
 	def visualize(self, filename, spectrogram=None):
 		audio, _ = librosa.load(filename, sr=self.sample_rate)
 		sgram = specgram(audio)
-
 		n_freq, n_time, unused_channels = sgram.shape
-
 		frequencies = range(n_freq)
 		times = range(n_time)
 
 		sgram = normalize(sgram[:, :, 0], sgram[:, :, 1])
 		sgram = np.reshape(sgram, (len(frequencies), len(times)))
-		plt.subplot(121)
+
+		ax = plt.subplot(121)
 		plt.pcolormesh(times, frequencies, sgram)
 		plt.imshow(sgram)
 		plt.ylabel('Frequency [Hz]')
 		plt.xlabel('Time [sec]')
-		plt.title("input")
+		ax.set_title("input")
 
 		if spectrogram != None:
 			spectrogram *= self.max_const
 			spectrogram = normalize(spectrogram[:, :, 0], spectrogram[:, :, 1])
 			spectrogram = np.reshape(spectrogram, (len(frequencies),
 										len(times)))
+			ax = plt.subplot(122)
 			plt.subplot(122)
 			plt.pcolormesh(times, frequencies, spectrogram)
 			plt.imshow(spectrogram)
 			plt.ylabel('Frequency [Hz]')
 			plt.xlabel('Time [sec]')
-			plt.title("output")
+			ax.set_title('output')
 
+		plt.suptitle("filename: {}".format(filename))
 		plt.show()

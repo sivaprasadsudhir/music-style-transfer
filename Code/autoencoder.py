@@ -2,7 +2,7 @@ from keras.layers import Input, Dense
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.models import load_model
-from keras.layers import Conv2D, Conv1D, Conv2DTranspose, MaxPooling2D, UpSampling2D
+from keras.layers import Conv2D, Conv1D, Conv2DTranspose, MaxPooling2D, UpSampling2D, Reshape, Flatten
 from keras.utils import print_summary
 
 import numpy as np
@@ -26,28 +26,26 @@ class Autoencoder(object):
 		print input_shape
 
 		# "encoded" is the encoded representation of the input
-		encoded = Conv2D(filters=100, kernel_size=(4, 4),
+		encoded = Conv2D(filters=40, kernel_size=(3, 3), strides=(3, 3),
 		                 activation='relu', padding='valid')(self.input)
-		encoded = MaxPooling2D(pool_size=(2, 2), padding='valid')(encoded)
-		encoded = Conv2D(filters=100, kernel_size=(4, 4),
+		encoded = Conv2D(filters=80, kernel_size=(2, 2),
 		                 activation='relu', padding='valid')(encoded)
-		encoded = MaxPooling2D(pool_size=(2, 2), padding='valid')(encoded)
-		encoded = Conv2D(filters=1, kernel_size=(5, 4),
+		encoded = Conv2D(filters=120, kernel_size=(2, 2), strides=(2, 2),
 		                 activation='relu', padding='valid')(encoded)
-		encoded = MaxPooling2D(pool_size=(2, 2), padding='valid')(encoded)
-		self.encoded = encoded
+		encoded = Conv2D(filters=200, kernel_size=(21, 47),
+		                 activation='relu', padding='valid')(encoded)
+		self.encoded=encoded
 
-
-		# decoding
-		decoded = UpSampling2D(size=(2, 2))(self.encoded)
-		decoded = Conv2DTranspose(filters=100, kernel_size=(5, 4),
-		                          activation='relu')(decoded)
-		decoded = UpSampling2D(size=(2, 2))(decoded)
-		decoded = Conv2DTranspose(filters=100, kernel_size=(4, 4),
-		                          activation='relu')(decoded)
-		decoded = UpSampling2D(size=(2, 2))(decoded)
-		decoded = Conv2DTranspose(filters=2, kernel_size=(4, 4),
-		                          activation='relu')(decoded)
+		decoded = Conv2DTranspose(filters=200, kernel_size=(21, 47),
+                    activation='relu', padding='valid')(self.encoded)
+		decoded = Conv2DTranspose(filters=120, kernel_size=(2, 2),
+					strides=(2, 2), activation='relu', padding='valid')(decoded)
+		decoded = Conv2DTranspose(filters=80, kernel_size=(2, 2),
+					activation='relu', padding='valid')(decoded)
+		decoded = Conv2DTranspose(filters=40, kernel_size=(3, 3),
+					strides=(3, 3), activation='relu', padding='valid')(decoded)
+		decoded = Conv2D(filters=1, kernel_size=(1, 1), activation='relu',
+					padding='valid')(decoded)
 		self.decoded = decoded
 
 		# this model maps an input to its reconstruction
