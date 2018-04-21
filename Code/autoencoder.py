@@ -2,7 +2,8 @@ from keras.layers import Input, Dense
 from keras.models import Model
 from keras.optimizers import Adam
 from keras.models import load_model
-from keras.layers import Conv2D, Conv1D, Conv2DTranspose, MaxPooling2D, UpSampling2D, Reshape, Flatten
+from keras.layers import Conv2D, Conv1D, Conv2DTranspose, 
+from keras.layers import MaxPooling2D, UpSampling2D, Reshape, Flatten
 from keras.utils import print_summary
 
 import numpy as np
