@@ -46,7 +46,7 @@ class Autoencoder(object):
 		decoded = Conv2DTranspose(filters=100, kernel_size=(4, 4),
 		                          activation='relu')(decoded)
 		decoded = UpSampling2D(size=(2, 2))(decoded)
-		decoded = Conv2DTranspose(filters=1, kernel_size=(4, 4),
+		decoded = Conv2DTranspose(filters=2, kernel_size=(4, 4),
 		                          activation='relu')(decoded)
 		self.decoded = decoded
 
