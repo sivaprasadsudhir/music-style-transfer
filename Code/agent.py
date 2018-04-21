@@ -11,6 +11,7 @@ import argparse
 import json
 import sys, os, errno
 import pdb
+import copy
 
 class Agent(object):
 
@@ -36,7 +37,7 @@ class Agent(object):
 
 		file_list = os.listdir(self.params['data_path'])
 		file_list = [os.path.join(self.params['data_path'], i)
-				for i in file_list[:100]]
+				for i in file_list[:10]]
 
 		x_data = Spectrogram(filenames = file_list)
 
@@ -47,7 +48,14 @@ class Agent(object):
 
 		print ('Training...')
 
-		callbacks_list = [EarlyStopping(patience=3)]
+		filename = self.trained_weights_path + 'model_weights-'+ str(self.params['load_ckpt_number']) + '-{epoch:02d}.h5'
+
+		checkpoint = ModelCheckpoint(filename,
+									monitor='val_acc', verbose=1,
+									mode='max', save_weights_only=True,
+									period=self.params['save_epoch_period'])
+
+		callbacks_list = [EarlyStopping(patience=6), checkpoint]
 
 		self.network.model.fit(self.x_train, self.x_train,
 		   			           epochs = self.params['num_epochs'],
@@ -61,9 +69,11 @@ class Agent(object):
 	def test(self, filenames):
 		filenames = filenames[5:15]
 		for filename in filenames:
+			print(filename)
 			test_data = Spectrogram(filenames=[filename])
 			decoded_spectrogram = self.network.model.predict(test_data.spectrogram)
 			#print_summary(self.network.model, line_length=80)
+			test_data.spectrogram_to_wav(spectrogram=copy.deepcopy(decoded_spectrogram), filename=filename.split("/")[-1])
 
 			test_data.visualize(filename=filename,
 			                    spectrogram = decoded_spectrogram)

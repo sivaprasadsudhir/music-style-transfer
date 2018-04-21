@@ -25,18 +25,21 @@ class Autoencoder(object):
 		self.input = Input(shape=input_shape)
 
 		# "encoded" is the encoded representation of the input
-		encoded = Conv2D(filters=40, kernel_size=(3, 3), strides=(3, 3),
+		encoded = Conv2D(filters=40, kernel_size=(4, 4),
 		                 activation='relu', padding='valid')(self.input)
+		encoded = Conv2D(filters=80, kernel_size=(2, 2), strides=(2, 2),
+		                 activation='relu', padding='valid')(encoded)
 		encoded = Conv2D(filters=80, kernel_size=(2, 2),
 		                 activation='relu', padding='valid')(encoded)
-		encoded = Conv2D(filters=120, kernel_size=(2, 2), strides=(2, 2),
+		encoded = Conv2D(filters=120, kernel_size=(3, 3), strides=(3, 3),
 		                 activation='relu', padding='valid')(encoded)
 		self.encoded=encoded
 
-		decoded = Conv2DTranspose(filters=120, kernel_size=(2, 2), strides=(2, 2), activation='relu', padding='valid')(self.encoded)
+		decoded = Conv2DTranspose(filters=120, kernel_size=(3, 3), strides=(3, 3), activation='relu', padding='valid')(self.encoded)
 		decoded = Conv2DTranspose(filters=80, kernel_size=(2, 2), activation='relu', padding='valid')(decoded)
-		decoded = Conv2DTranspose(filters=40, kernel_size=(3, 3), strides=(3, 3), activation='relu', padding='valid')(decoded)
-		decoded = Conv2D(filters=1, kernel_size=(1, 1), activation='relu', padding='valid')(decoded)
+		decoded = Conv2DTranspose(filters=80, kernel_size=(2, 2), strides=(2, 2), activation='relu', padding='valid')(decoded)
+		decoded = Conv2DTranspose(filters=40, kernel_size=(4, 4), activation='relu', padding='valid')(decoded)
+		decoded = Conv2D(filters=2, kernel_size=(1, 1), activation='relu', padding='valid')(decoded)
 		self.decoded = decoded
 
 		# this model maps an input to its reconstruction

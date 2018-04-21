@@ -213,12 +213,14 @@ class Spectrogram(object):
 			# print "Shape of the spectrogram", sgram.shape
 			spectrogram.append(sgram)
 
-		self.spectrogram = np.array(spectrogram) / self.max_const
+		# self.spectrogram = np.array(spectrogram) / self.max_const
+		self.spectrogram = np.array(spectrogram)
 
 	def spectrogram_to_wav(self, spectrogram, filename="output.wav"):
 		dims = spectrogram.shape
 		print dims
-		spec = spectrogram * self.max_const
+		# spec = spectrogram * self.max_const
+		spec = spectrogram.reshape(spectrogram.shape[1:])
 		# if self.pad:
 			# spec = tf.concat([spec, tf.zeros([1, dims[1], dims[2]])], 0)
 		audio = ispecgram(spec,
@@ -251,18 +253,20 @@ class Spectrogram(object):
 		plt.xlabel('Time [sec]')
 		ax.set_title("input")
 
-		if spectrogram != None:
-			spectrogram *= self.max_const
-			spectrogram = normalize(spectrogram[:, :, 0], spectrogram[:, :, 1])
-			spectrogram = np.reshape(spectrogram, (len(frequencies),
-										len(times)))
-			ax = plt.subplot(122)
-			plt.subplot(122)
-			plt.pcolormesh(times, frequencies, spectrogram)
-			plt.imshow(spectrogram)
-			plt.ylabel('Frequency [Hz]')
-			plt.xlabel('Time [sec]')
-			ax.set_title('output')
+		# if spectrogram != None:
+		# spectrogram *= self.max_const
+		print(spectrogram.shape)
+		spectrogram = normalize(spectrogram[0, :, :, 0], spectrogram[0, :, :, 1])
+		print(spectrogram.shape)
+		spectrogram = np.reshape(spectrogram, (len(frequencies),
+									len(times)))
+		print(spectrogram.shape)
+		ax = plt.subplot(122)
+		plt.pcolormesh(times, frequencies, spectrogram)
+		plt.imshow(spectrogram)
+		plt.ylabel('Frequency [Hz]')
+		plt.xlabel('Time [sec]')
+		ax.set_title('output')
 
 		plt.suptitle("filename: {}".format(filename))
 		plt.show()
