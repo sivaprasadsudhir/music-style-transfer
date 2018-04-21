@@ -64,14 +64,16 @@ class Agent(object):
 							   validation_data = (self.x_test, self.x_test),
 							   callbacks=callbacks_list)
 
-		self.network.save_model_weights(self.trained_weights_path + 'model_weights.h5')
+		self.network.save_model_weights(self.trained_weights_path + \
+										'model_weights.h5')
 
 	def test(self, filenames):
 		filenames = filenames[5:15]
 		for filename in filenames:
 			print(filename)
 			test_data = Spectrogram(filenames=[filename])
-			decoded_spectrogram = self.network.model.predict(test_data.spectrogram)
+			decoded_spectrogram = self.network.model.predict(
+									test_data.spectrogram)
 			#print_summary(self.network.model, line_length=80)
 			test_data.spectrogram_to_wav(spectrogram=copy.deepcopy(decoded_spectrogram), filename=filename.split("/")[-1])
 
