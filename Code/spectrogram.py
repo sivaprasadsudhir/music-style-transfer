@@ -20,7 +20,6 @@ class Spectrogram(object):
 
 		spectrogram = []
 		for fname in filenames:
-			print(fname)
 			sample_rate, samples = wavfile.read(fname)
 			frequencies, times, sgram = signal.spectrogram(samples, sample_rate)
 			spectrogram.append(sgram)

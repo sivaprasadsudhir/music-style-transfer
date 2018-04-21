@@ -36,9 +36,7 @@ class Agent(object):
 
 		file_list = os.listdir(self.params['data_path'])
 		file_list = [os.path.join(self.params['data_path'], i)
-				for i in file_list[5:15]]
-
-		print(file_list)
+				for i in file_list[:100]]
 
 		x_data = Spectrogram(filenames = file_list)
 
@@ -49,7 +47,7 @@ class Agent(object):
 
 		print ('Training...')
 
-		callbacks_list = [EarlyStopping()]
+		callbacks_list = [EarlyStopping(patience=3)]
 
 		self.network.model.fit(self.x_train, self.x_train,
 		   			           epochs = self.params['num_epochs'],
