@@ -70,7 +70,10 @@ class Agent(object):
 							   validation_data = (self.x_test, self.x_test),
 							   )
 
-		self.network.save_model_weights(self.trained_weights_path + 'model_weights.h5')
+		model_save_file = self.trained_weights_path + 'model_weights.h5'
+		encoder_save_file = self.trained_weights_path + 'encoder_weights.h5'
+		decoder_save_file = self.trained_weights_path + 'decoder_weights.h5'
+		self.network.save_model_weights(model_save_file, encoder_save_file, decoder_save_file)
 
 	def test(self, filenames):
 		# filenames = filenames[5:15]
