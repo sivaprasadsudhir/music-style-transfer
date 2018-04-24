@@ -3,8 +3,7 @@ from scipy import signal
 from scipy.io import wavfile
 import librosa
 import numpy as np
-import os
-import sys
+import os, sys, pdb
 import tensorflow as tf
 
 import pdb
@@ -207,7 +206,9 @@ class Spectrogram(object):
 
 	def wav_to_spectrogram(self, filenames):
 		spectrogram = []
+		print (filenames)
 		for fname in filenames:
+			print (fname)
 			audio, _ = librosa.load(fname, sr=self.sample_rate)
 			sgram = specgram(audio)
 			# print "Shape of the spectrogram", sgram.shape
@@ -219,7 +220,7 @@ class Spectrogram(object):
 
 		spectrogram = []
 		for fname in filenames:
-			print(fname)
+			# print(fname)
 			sample_rate, samples = wavfile.read(fname)
 			frequencies, times, sgram = signal.spectrogram(samples, sample_rate)
 			spectrogram.append(sgram)
@@ -249,12 +250,14 @@ class Spectrogram(object):
 								 norm=False)
 
 	def visualize(self, filename, spectrogram=None):
+		print (filename)
 		audio, _ = librosa.load(filename, sr=self.sample_rate)
 		sgram = specgram(audio)
 		n_freq, n_time, unused_channels = sgram.shape
 		frequencies = range(n_freq)
 		times = range(n_time)
 
+		pdb.set_trace()
 		sgram = normalize(sgram[:, :, 0], sgram[:, :, 1])
 		sgram = np.reshape(sgram, (len(frequencies), len(times)))
 

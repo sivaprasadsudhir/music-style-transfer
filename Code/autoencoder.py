@@ -26,14 +26,14 @@ class Autoencoder(object):
 		self.input = Input(shape=input_shape)
 		print input_shape
 
-		# self.encoding_dim = 16
+		self.encoding_dim = 16
 
 		# "encoded" is the encoded representation of the input
 		encoded = Dense(256, activation='relu')(self.input)
 		encoded = Dense(128, activation='relu')(self.input)
 		encoded = Dense(64, activation='relu')(self.input)
 		encoded = Dense(32, activation='relu')(self.input)
-		self.encoded = Dense(16, activation='relu')(encoded)
+		self.encoded = Dense(self.encoding_dim, activation='relu')(encoded)
 
 		# "decoded" is the lossy reconstruction of the input for instrument 1
 		decoded = Dense(32, activation='relu')(self.encoded)
@@ -48,8 +48,8 @@ class Autoencoder(object):
 		self.model.compile(optimizer=Adam(lr=learning_r),
 								 loss='mse')
 
-		self.define_decoder_network()
 		self.define_encoder_network()
+		self.define_decoder_network()
 		print_summary(self.model, line_length=80)
 
 	def define_encoder_network(self):
@@ -58,10 +58,11 @@ class Autoencoder(object):
 	
 	def define_decoder_network(self):
 		# create a placeholder for an encoded (32-dimensional) input
-		encoded_input = Input(shape=self.encoding_dim)
+		encoded_input = Input(shape=(self.encoding_dim,))
 
 		# retrieve the last layer of the autoencoder model
-		decoded_output = self.model.layers[-4](encoded_input)
+		decoded_output = self.model.layers[-5](encoded_input)
+		decoded_output = self.model.layers[-4](decoded_output)
 		decoded_output = self.model.layers[-3](decoded_output)
 		decoded_output = self.model.layers[-2](decoded_output)
 		decoded_output = self.model.layers[-1](decoded_output)
