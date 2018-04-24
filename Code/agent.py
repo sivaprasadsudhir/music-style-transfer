@@ -40,7 +40,7 @@ class Agent(object):
 		# file_list = [os.path.join(self.params['data_path'], i)
 		# 		for i in file_list[5:15]]
 
-		file_list = [self.params['data_path'] + 'mallet_acoustic_000-091-075.wav']		
+		file_list = [self.params['data_path'] + 'keyboard_acoustic_000-091-075.wav']		
 
 		# print(file_list)
 
@@ -70,7 +70,10 @@ class Agent(object):
 							   validation_data = (self.x_test, self.x_test),
 							   )
 
-		self.network.save_model_weights(self.trained_weights_path + 'model_weights.h5')
+		model_save_file = self.trained_weights_path + 'model_weights.h5'
+		encoder_save_file = self.trained_weights_path + 'encoder_weights.h5'
+		decoder_save_file = self.trained_weights_path + 'decoder_weights.h5'
+		self.network.save_model_weights(model_save_file, encoder_save_file, decoder_save_file)
 
 	def test(self, filenames):
 		# filenames = filenames[5:15]

@@ -8,12 +8,19 @@ import pdb
 
 def load_network(params, network, trained_weights_path):
 	model_load_file = trained_weights_path + 'model_weights'
+	encoder_load_file = trained_weights_path + 'encoder_weights'
+	decoder_load_file = trained_weights_path + 'decoder_weights'
+
 	load_ckpt_number = params['load_ckpt_number']
 	if load_ckpt_number != 0:
 		model_load_file += '-' + str(load_ckpt_number)
+		encoder_load_file += '-' + str(load_ckpt_number)
+		decoder_load_file += '-' + str(load_ckpt_number)
 	model_load_file += '.h5'
+	encoder_load_file += '.h5'
+	decoder_load_file += '.h5'
 
-	network.load_model_weights(model_load_file)
+	network.load_model_weights(model_load_file, encoder_load_file, decoder_load_file)
 
 def main(args):
 	# Parse command-line arguments.
@@ -35,27 +42,19 @@ def main(args):
 	
 	print (encoded_input_from)
 	
-	decoded_spectrogram = trans_from.decoder.predict(encoded_input_from)
+	decoded_spectrogram = trans_to.decoder.predict(encoded_input_from)
 	test_data.visualize(filename=test_data_path[0],
 			                    spectrogram = decoded_spectrogram)
 
-	decoded_full_spectrogram = trans_from.model.predict(test_data.spectrogram)
+	test_data_path[0] = test_data_path[0].replace('mallet', 'keyboard', 2)
+	test_data = Spectrogram(filenames=test_data_path)
 
+	encoded_input_to = trans_to.encoder.predict(test_data.spectrogram)
+	print (encoded_input_to)
+
+	decoded_spectrogram = trans_from.decoder.predict(encoded_input_to)
 	test_data.visualize(filename=test_data_path[0],
-			                    spectrogram = decoded_full_spectrogram)
-	
-	print (decoded_spectrogram)
-	print (decoded_full_spectrogram)
-
-	# test_data_path[0] = test_data_path[0].replace('mallet', 'keyboard', 2)
-	# test_data = Spectrogram(filenames=test_data_path)
-
-	# encoded_input_to = trans_to.encoder.predict(test_data.spectrogram)
-	# print (encoded_input_to)
-
-	# decoded_spectrogram = trans_from.decoder.predict(encoded_input_to)
-	# test_data.visualize(filename=test_data_path[0],
-	# 		                    spectrogram = decoded_spectrogram)
+			                    spectrogram = decoded_spectrogram)
 	
 if __name__ == '__main__':
 	main(sys.argv)

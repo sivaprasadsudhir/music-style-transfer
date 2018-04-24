@@ -45,11 +45,10 @@ class Autoencoder(object):
 		# this model maps an input to its reconstruction
 		self.model = Model(self.input, self.decoded)
 
-		self.model.compile(optimizer=Adam(lr=learning_r),
-								 loss='mse')
-
 		self.define_encoder_network()
 		self.define_decoder_network()
+
+		self.model.compile(optimizer=Adam(lr=learning_r), loss='mse')
 		print_summary(self.model, line_length=80)
 
 	def define_encoder_network(self):
@@ -70,11 +69,15 @@ class Autoencoder(object):
 		# create the decoder model
 		self.decoder = Model(encoded_input, decoded_output)
 
-	def save_model_weights(self, model_path):
+	def save_model_weights(self, model_path, encoder_path, decoder_path):
 		self.model.save_weights(model_path)
+		self.encoder.save_weights(encoder_path)
+		self.decoder.save_weights(decoder_path)
 
-	def load_model_weights(self, model_path):
+	def load_model_weights(self, model_path, encoder_path, decoder_path):
 		self.model.load_weights(model_path)
+		self.encoder.load_weights(encoder_path)
+		self.decoder.load_weights(decoder_path)
 
 	def save_model(self, model_path, encoder_path, decoder_path):
 		self.model.save(model_path)
