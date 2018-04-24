@@ -138,11 +138,11 @@ class SharedAutoencoder(object):
 		# this model maps an input to its reconstruction
 		self.model = Model(self.input, self.merged_decoded)
 
-		self.model.compile(optimizer=Adam(lr=learning_r),
-								 loss='mse')
-
 		self.define_decoder_network()
 		self.define_encoder_network()
+
+		self.model.compile(optimizer=Adam(lr=learning_r),
+										 loss='mse')
 		print_summary(self.model, line_length=80)
 
 	def define_encoder_network(self):
