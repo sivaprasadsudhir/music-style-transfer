@@ -30,9 +30,9 @@ class Autoencoder(object):
 
 		# "encoded" is the encoded representation of the input
 		encoded = Dense(256, activation='relu')(self.input)
-		encoded = Dense(128, activation='relu')(self.input)
-		encoded = Dense(64, activation='relu')(self.input)
-		encoded = Dense(32, activation='relu')(self.input)
+		encoded = Dense(128, activation='relu')(encoded)
+		encoded = Dense(64, activation='relu')(encoded)
+		encoded = Dense(32, activation='relu')(encoded)
 		self.encoded = Dense(self.encoding_dim, activation='relu')(encoded)
 
 		# "decoded" is the lossy reconstruction of the input for instrument 1
@@ -78,7 +78,11 @@ class Autoencoder(object):
 
 	def save_model(self, model_path, encoder_path, decoder_path):
 		self.model.save(model_path)
+		self.encoder.save(encoder_path)
+		self.decoder.save(decoder_path)
 
 	def load_model(self, model_path, encoder_path, decoder_path):
 		self.model = load_model(model_path)
+		self.encoder = load_model(encoder_path)
+		self.decoder = load_model(decoder_path)
 

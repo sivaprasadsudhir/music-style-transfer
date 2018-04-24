@@ -208,42 +208,53 @@ class Spectrogram(object):
 		spectrogram = []
 		print (filenames)
 		for fname in filenames:
-			print (fname)
+			# print (fname)
 			audio, _ = librosa.load(fname, sr=self.sample_rate)
 			sgram = specgram(audio)
 			# print "Shape of the spectrogram", sgram.shape
 			spectrogram.append(sgram)
 
 		# self.spectrogram = np.array(spectrogram) / self.max_const
-		self.spectrogram = np.array(spectrogram)
+		spectrogram = np.array(spectrogram)
 
+		
+		# spectrogram = []
+		# for fname in filenames:
+		# 	# print(fname)
+		# 	sample_rate, samples = wavfile.read(fname)
+		# 	frequencies, times, sgram = signal.spectrogram(samples, sample_rate)
+		# 	spectrogram.append(sgram)
 
-		spectrogram = []
-		for fname in filenames:
-			# print(fname)
-			sample_rate, samples = wavfile.read(fname)
-			frequencies, times, sgram = signal.spectrogram(samples, sample_rate)
-			spectrogram.append(sgram)
-
-		spectrogram = np.array(spectrogram) / self.max_const
+		# pdb.set_trace()
+		# spectrogram = np.array(spectrogram) / self.max_const
 		# self.spectrogram = spectrogram.reshape(spectrogram.shape + (1,))
 		self.spectrogram = spectrogram.reshape((len(spectrogram), np.prod(spectrogram.shape[1:])))
 
-	def spectrogram_to_wav(self, spectrogram, filename="output.wav"):
-		dims = spectrogram.shape
-		print dims
+	def spectrogram_to_wav(self, filename, spectrogram, outfile="output.wav"):
+		# dims = spectrogram.shape
+		# print dims
+
+		print (filename)
+		audio, _ = librosa.load(filename, sr=self.sample_rate)
+		sgram = specgram(audio)
+		n_freq, n_time, unused_channels = sgram.shape
+
+		print (n_freq, n_time)
+
+		# pdb.set_trace()
 		# spec = spectrogram * self.max_const
-		spec = spectrogram.reshape(spectrogram.shape[1:])
+		# spec = spectrogram.reshape(spectrogram.shape[1:])
+		spec = spectrogram.reshape((1, n_freq, n_time, 2))
 		# if self.pad:
 			# spec = tf.concat([spec, tf.zeros([1, dims[1], dims[2]])], 0)
-		audio = ispecgram(spec,
-					n_fft=self.n_fft,
-					hop_length=self.hop_length,
-					mask=self.mask,
-					log_mag=self.log_mag,
-					re_im=self.re_im,
-					dphase=self.dphase,
-					mag_only=self.mag_only,
+		audio = ispecgram(spec, 
+					n_fft=self.n_fft, 
+					hop_length=self.hop_length, 
+					mask=self.mask, 
+					log_mag=self.log_mag, 
+					re_im=self.re_im, 
+					dphase=self.dphase, 
+					mag_only=self.mag_only, 
 					num_iters=self.num_iters)
 
 		librosa.output.write_wav(filename, audio, self.sample_rate,
@@ -257,7 +268,6 @@ class Spectrogram(object):
 		frequencies = range(n_freq)
 		times = range(n_time)
 
-		pdb.set_trace()
 		sgram = normalize(sgram[:, :, 0], sgram[:, :, 1])
 		sgram = np.reshape(sgram, (len(frequencies), len(times)))
 
@@ -271,6 +281,8 @@ class Spectrogram(object):
 		# if spectrogram != None:
 		# spectrogram *= self.max_const
 		print(spectrogram.shape)
+		# pdb.set_trace()
+		spectrogram = spectrogram.reshape((1, n_freq, n_time, 2))
 		spectrogram = normalize(spectrogram[0, :, :, 0], spectrogram[0, :, :, 1])
 		print(spectrogram.shape)
 		spectrogram = np.reshape(spectrogram, (len(frequencies),
