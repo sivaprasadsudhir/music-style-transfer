@@ -41,6 +41,7 @@ class Agent(object):
 				for i in file_list]
 
 		# file_list = [self.params['data_path'] + 'keyboard_acoustic_000-091-075.wav']		
+		# file_list = [self.params['data_path'] + 'mallet_acoustic_000-091-075.wav']		
 
 		# print(file_list)
 
@@ -82,9 +83,8 @@ class Agent(object):
 			test_data = Spectrogram(filenames=[filename])
 			decoded_spectrogram = self.network.model.predict(test_data.spectrogram)
 			#print_summary(self.network.model, line_length=80)
-
-			# test_data.spectrogram_to_wav(filename=filename,
-			# 							 spectrogram=copy.deepcopy(decoded_spectrogram))
+			test_data.spectrogram_to_wav(filename=filename,
+										 spectrogram=copy.deepcopy(decoded_spectrogram))
 
 			test_data.visualize(filename=filename,
 			                    spectrogram = decoded_spectrogram)

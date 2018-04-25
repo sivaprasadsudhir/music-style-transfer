@@ -3,6 +3,7 @@ from spectrogram import Spectrogram
 from agent import Agent
 from utils import *
 
+import copy
 import json
 import pdb
 
@@ -43,6 +44,9 @@ def main(args):
 	print (encoded_input_from)
 	
 	decoded_spectrogram = trans_to.decoder.predict(encoded_input_from)
+	test_data.spectrogram_to_wav(filename=params['test_data_path'][0],
+								spectrogram=copy.deepcopy(decoded_spectrogram),
+								outfile="how_keyboard.wav")
 	test_data.visualize(filename=test_data_path[0],
 			                    spectrogram = decoded_spectrogram)
 
@@ -53,6 +57,9 @@ def main(args):
 	print (encoded_input_to)
 
 	decoded_spectrogram = trans_from.decoder.predict(encoded_input_to)
+	test_data.spectrogram_to_wav(filename=params['test_data_path'][0],
+								spectrogram=copy.deepcopy(decoded_spectrogram),
+								outfile="how_mallet.wav")
 	test_data.visualize(filename=test_data_path[0],
 			                    spectrogram = decoded_spectrogram)
 	
