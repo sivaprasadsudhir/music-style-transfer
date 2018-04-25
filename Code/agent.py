@@ -123,32 +123,38 @@ class SharedAgent(Agent):
 
 		print ('Reading Data...')
 
-		file_list = os.listdir(self.params['data_path'])
+		file_list_original = os.listdir(self.params['data_path'])
+		file_list_original = [os.path.join(self.params['data_path'], i)
+				for i in file_list_original[:]]
 
-		file_list_instr2 = [filename.replace("keyboard_", "mallet_", 2) for filename in file_list]
-		mask = [i for i, filename in enumerate(file_list_instr2) if os.path.isfile(filename)]
-		good_file_list_instr2 = [filename for i, filename in enumerate(file_list_instr2) if os.path.isfile(filename)]
+		mallet_file_list = [filename.replace("keyboard_", "mallet_", 2) 
+							for filename in file_list_original]
 
-		file_list = file_list[mask]
-		file_list = [os.path.join(self.params['data_path'], i)
-				for i in file_list[50:60]]
+		mask = [i for i, filename in enumerate(mallet_file_list) 
+				if os.path.isfile(filename)]
+
+		file_list = [file_list_original[i] for i in mask]
+
+		file_list = [filename for filename in file_list[50:60]]
 
 		file_train, file_test = train_test_split(file_list, test_size=0.3)
 
-		file_train_instr2 = [filename.replace("keyboard_", "mallet_", 2) for filename in file_train]
+		good_mallet_file_list = [filename.replace("keyboard_", "mallet_", 2) 
+									for filename in file_train]
+		
 		spec_obj = Spectrogram(filenames = file_train)
-
 		self.x_train = spec_obj.spectrogram
-		self.x_train = self.x_train[mask]
-		spec_obj.wav_to_spectrogram(file_train_instr2)
-		self.y_train = np.concatenate([self.x_train, spec_obj.spectrogram], axis = -1)
+		spec_obj.wav_to_spectrogram(good_mallet_file_list)
+		self.y_train = np.concatenate([self.x_train, spec_obj.spectrogram],
+										axis = -1)
 
 		spec_obj.wav_to_spectrogram(file_test)
 		self.x_test = spec_obj.spectrogram
-		file_test_instr2 = [filename.replace("keyboard_", "mallet_", 2) for filename in file_test]
-		spec_obj.wav_to_spectrogram(file_test_instr2)
-		self.y_test = np.concatenate([self.x_test, spec_obj.spectrogram], axis = -1)
-
+		good_mallet_file_list = [filename.replace("keyboard_", "mallet_", 2)
+									for filename in file_test]
+		spec_obj.wav_to_spectrogram(good_mallet_file_list)
+		self.y_test = np.concatenate([self.x_test, spec_obj.spectrogram],
+										axis = -1)
 
 	def train(self):
 
