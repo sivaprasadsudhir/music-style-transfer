@@ -38,7 +38,7 @@ class Agent(object):
 
 		file_list = os.listdir(self.params['data_path'])
 		file_list = [os.path.join(self.params['data_path'], i)
-				for i in file_list[1:5]]
+				for i in file_list]
 
 		# file_list = [self.params['data_path'] + 'keyboard_acoustic_000-091-075.wav']		
 		# file_list = [self.params['data_path'] + 'mallet_acoustic_000-091-075.wav']		
