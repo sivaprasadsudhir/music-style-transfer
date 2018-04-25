@@ -206,7 +206,7 @@ class Spectrogram(object):
 
 	def wav_to_spectrogram(self, filenames):
 		spectrogram = []
-		print (filenames)
+		# print (filenames)
 		for fname in filenames:
 			# print (fname)
 			audio, _ = librosa.load(fname, sr=self.sample_rate)

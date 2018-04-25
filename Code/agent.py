@@ -38,7 +38,7 @@ class Agent(object):
 
 		file_list = os.listdir(self.params['data_path'])
 		file_list = [os.path.join(self.params['data_path'], i)
-				for i in file_list]
+				for i in file_list[1:5]]
 
 		# file_list = [self.params['data_path'] + 'keyboard_acoustic_000-091-075.wav']		
 		# file_list = [self.params['data_path'] + 'mallet_acoustic_000-091-075.wav']		
@@ -65,12 +65,15 @@ class Agent(object):
 		# callbacks_list = [EarlyStopping(patience=6), checkpoint]
 		callbacks_list = [checkpoint]
 
-		self.network.model.fit(self.x_train, self.x_train,
+		htry_cb = self.network.model.fit(self.x_train, self.x_train,
 		   			           epochs = self.params['num_epochs'],
 							   batch_size = 256,
 							   shuffle = True,
 							   validation_data = (self.x_test, self.x_test),
 							   callbacks = callbacks_list )
+
+		with open(self.trained_weights_path + 'log_loss.txt', 'w') as file:
+			file.write(json.dumps(htry_cb.history))
 
 		model_save_file = self.trained_weights_path + 'model_weights.h5'
 		encoder_save_file = self.trained_weights_path + 'encoder_weights.h5'
