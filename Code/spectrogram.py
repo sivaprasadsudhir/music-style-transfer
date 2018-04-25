@@ -206,7 +206,7 @@ class Spectrogram(object):
 
 	def wav_to_spectrogram(self, filenames):
 		spectrogram = []
-		print (filenames)
+		# print (filenames)
 		for fname in filenames:
 			# print (fname)
 			audio, _ = librosa.load(fname, sr=self.sample_rate)
@@ -244,7 +244,7 @@ class Spectrogram(object):
 		# pdb.set_trace()
 		# spec = spectrogram * self.max_const
 		# spec = spectrogram.reshape(spectrogram.shape[1:])
-		spec = spectrogram.reshape((1, n_freq, n_time, 2))
+		spec = spectrogram.reshape((n_freq, n_time, 2))
 		# if self.pad:
 			# spec = tf.concat([spec, tf.zeros([1, dims[1], dims[2]])], 0)
 		audio = ispecgram(spec, 
@@ -257,7 +257,7 @@ class Spectrogram(object):
 					mag_only=self.mag_only, 
 					num_iters=self.num_iters)
 
-		librosa.output.write_wav(filename, audio, self.sample_rate,
+		librosa.output.write_wav(outfile, audio, self.sample_rate,
 								 norm=False)
 
 	def visualize(self, filename, spectrogram=None):
