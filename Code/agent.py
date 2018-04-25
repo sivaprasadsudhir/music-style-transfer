@@ -95,9 +95,16 @@ class Agent(object):
 	def load_network(self):
 		if eval(self.params['load_weights']):
 			model_load_file = self.trained_weights_path + 'model_weights'
+			encoder_load_file = self.trained_weights_path + 'encoder_weights'
+			decoder_load_file = self.trained_weights_path + 'decoder_weights'
+
 			load_ckpt_number = self.params['load_ckpt_number']
 			if load_ckpt_number != 0:
 				model_load_file += '-' + str(load_ckpt_number)
+				encoder_load_file += '-' + str(load_ckpt_number)
+				decoder_load_file += '-' + str(load_ckpt_number)
 			model_load_file += '.h5'
+			encoder_load_file += '.h5'
+			decoder_load_file += '.h5'
 
-			self.network.load_model_weights(model_load_file)
+			self.network.load_model_weights(model_load_file, encoder_load_file, decoder_load_file)
