@@ -36,19 +36,19 @@ class Agent(object):
 
 		print ('Reading Data...')
 
-		# file_list = os.listdir(self.params['data_path'])
-		# file_list = [os.path.join(self.params['data_path'], i)
-		# 		for i in file_list[5:15]]
+		file_list = os.listdir(self.params['data_path'])
+		file_list = [os.path.join(self.params['data_path'], i)
+				for i in file_list]
 
-		file_list = [self.params['data_path'] + 'keyboard_acoustic_000-091-075.wav']		
+		# file_list = [self.params['data_path'] + 'keyboard_acoustic_000-091-075.wav']		
 
 		# print(file_list)
 
 		x_data = Spectrogram(filenames = file_list)
 
-		self.x_train = self.x_test = x_data.spectrogram
-		# self.x_train, self.x_test = train_test_split(x_data.spectrogram,
-		# 												test_size=0.3)
+		# self.x_train = self.x_test = x_data.spectrogram
+		self.x_train, self.x_test = train_test_split(x_data.spectrogram,
+														test_size=0.3)
 
 	def train(self):
 
@@ -62,13 +62,14 @@ class Agent(object):
 									period=self.params['save_epoch_period'])
 
 		# callbacks_list = [EarlyStopping(patience=6), checkpoint]
+		callbacks_list = [checkpoint]
 
 		self.network.model.fit(self.x_train, self.x_train,
 		   			           epochs = self.params['num_epochs'],
 							   batch_size = 256,
 							   shuffle = True,
 							   validation_data = (self.x_test, self.x_test),
-							   )
+							   callbacks = callbacks_list )
 
 		model_save_file = self.trained_weights_path + 'model_weights.h5'
 		encoder_save_file = self.trained_weights_path + 'encoder_weights.h5'
