@@ -8,6 +8,8 @@ from keras.utils import print_summary
 import numpy as np
 import pdb
 
+from loss import regularized_mse
+
 
 class SharedAutoencoder(object):
 
@@ -62,7 +64,7 @@ class SharedAutoencoder(object):
 		self.define_encoder_network()
 
 		self.model.compile(optimizer=Adam(lr=learning_r),
-										 loss='mse')
+										 loss=regularized_mse)
 		print_summary(self.model, line_length=80)
 
 	def define_encoder_network(self):
