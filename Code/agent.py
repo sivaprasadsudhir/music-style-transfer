@@ -38,18 +38,9 @@ class SharedAgent(object):
 	def get_data(self):
 
 		print ('Reading Data...')
-
-		file_list_original = os.listdir(self.params['data_path'])
-		file_list_original = [os.path.join(self.params['data_path'], i)
-				for i in file_list_original[:]]
-
-		mallet_file_list = [filename.replace("keyboard_", "mallet_", 2)
-							for filename in file_list_original]
-
-		mask = [i for i, filename in enumerate(mallet_file_list)
-				if os.path.isfile(filename)]
-
-		file_list = [file_list_original[i] for i in mask]
+		f = open('../Data/keyboard_mallet_shared.json')
+		file_list = json.load(f)
+		f.close()
 
 		# file_list = [filename for filename in file_list[50:60]]
 
