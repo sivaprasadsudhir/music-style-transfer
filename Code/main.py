@@ -18,7 +18,7 @@ def main(args):
 	if eval(params['train']):
 		agent.train()
 	else:
-		agent.test(params['test_data_path'])
+		agent.test()
 
 if __name__ == '__main__':
 	main(sys.argv)
