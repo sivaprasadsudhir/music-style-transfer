@@ -8,7 +8,7 @@ from keras.utils import print_summary
 import numpy as np
 import pdb
 
-from loss import regularized_mse
+from loss import regularized_mse, edge_regularized_mse
 
 
 class SharedAutoencoder(object):
@@ -65,7 +65,7 @@ class SharedAutoencoder(object):
 
 		self.model.compile(optimizer=Adam(lr=learning_r),
 										 loss=regularized_mse)
-		print_summary(self.model, line_length=80)
+		# print_summary(self.model, line_length=80)
 
 	def define_encoder_network(self):
 		# this model maps an input to its encoded representation
@@ -93,4 +93,4 @@ class SharedAutoencoder(object):
 		self.model.save(model_path)
 
 	def load_model(self, model_path, encoder_path, decoder_path):
-		self.model = load_model(model_path)
+		self.model = load_model(model_path, custom_objects={'regularized_mse': regularized_mse, 'edge_regularized_mse': edge_regularized_mse})

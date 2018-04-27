@@ -42,9 +42,9 @@ class SharedAgent(object):
 		file_list = json.load(f)
 		f.close()
 
-		file_list = [filename for filename in file_list[50:60]]
+		file_list = [filename for filename in file_list[0:20]]
 
-		file_train, file_test = train_test_split(file_list, test_size=0.3)
+		file_train, file_test = train_test_split(file_list, test_size=0.3, random_state=0)
 
 		good_mallet_file_list = [filename.replace("keyboard_", "mallet_", 2)
 									for filename in file_train]
@@ -67,7 +67,7 @@ class SharedAgent(object):
 
 		print ('Training SharedAutoencoder...')
 
-		# callbacks_list = [EarlyStopping(patience=20)]
+		callbacks_list = [EarlyStopping(patience=20)]
 
 		filename = self.trained_weights_path + 'model_weights-'+ \
 					str(self.params['load_ckpt_number']) + '-{epoch:02d}.h5'
@@ -78,7 +78,7 @@ class SharedAgent(object):
 									period=self.params['save_epoch_period'])
 
 		#callbacks_list = [checkpoint]
-		callbacks_list = []
+		#callbacks_list = []
 
 		htry_cb = self.network.model.fit(self.x_train, self.y_train,
 		   			           epochs = self.params['num_epochs'],
