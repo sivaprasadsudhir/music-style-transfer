@@ -64,7 +64,7 @@ class SharedAutoencoder(object):
 		self.define_encoder_network()
 
 		self.model.compile(optimizer=Adam(lr=learning_r),
-										 loss=regularized_mse)
+						   loss=edge_regularized_mse)
 		# print_summary(self.model, line_length=80)
 
 	def define_encoder_network(self):
