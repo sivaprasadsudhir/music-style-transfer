@@ -42,7 +42,7 @@ class SharedAgent(object):
 		file_list = json.load(f)
 		f.close()
 
-		file_list = [filename for filename in file_list[0:20]]
+		# file_list = [filename for filename in file_list[0:20]]
 
 		file_train, file_test = train_test_split(file_list, test_size=0.3, random_state=0)
 
@@ -108,22 +108,22 @@ class SharedAgent(object):
 			test_data.spectrogram_to_wav(filename=filename,
 								spectrogram=copy.deepcopy(keyboard_out),
 								outfile=filename.split("/")[-1])
-			test_data.visualize(filename=filename,
-			                    spectrogram=keyboard_out)
+			# test_data.visualize(filename=filename,
+			#                     spectrogram=keyboard_out)
 			test_data.spectrogram_to_wav(
 					filename=filename.replace("keyboard", "mallet", 2),
 					spectrogram=copy.deepcopy(mallet_out),
 					outfile=filename.replace("keyboard", "mallet", 2).split("/")[-1])
-			test_data.visualize(
-					filename=filename.replace("keyboard", "mallet", 2),
-					spectrogram = mallet_out)
+			# test_data.visualize(
+			# 		filename=filename.replace("keyboard", "mallet", 2),
+			# 		spectrogram = mallet_out)
 
 	def load_network(self):
 		if eval(self.params['load_weights']):
 			model_load_file = self.trained_weights_path + 'model_weights'
 			load_ckpt_number = self.params['load_ckpt_number']
 			if load_ckpt_number != 0:
-				model_load_file += '-' + str(load_ckpt_number)
+				model_load_file += '-0-' + str(load_ckpt_number)
 			model_load_file += '.h5'
 
 			self.network.load_model_weights(model_load_file)
