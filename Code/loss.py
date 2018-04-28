@@ -30,7 +30,7 @@ def regularized_mse(y_true, y_pred):
 def norm(t):
     s = K.square(t)
     norm_squared = K.sum(s, axis=-1)
-    return K.reshape(K.sqrt(norm_squared), (K.shape(norm_squared)[0], 514, 251, 1))
+    return K.reshape(K.sqrt(norm_squared + K.epsilon()), (K.shape(norm_squared)[0], 514, 251, 1))
 
 def edge_regularized_mse(y_true, y_pred):
     mse = K.mean(K.square(y_pred - y_true), axis=-1)
@@ -41,10 +41,9 @@ def edge_regularized_mse(y_true, y_pred):
     y_true_2d = norm(y_true_2d)
     y_pred_2d = norm(y_pred_2d)
 
-    print(K.int_shape(y_true_2d))
-    y_true_edge = K.conv2d(y_true_2d, kernel=edge_kernel, data_format="channels_last")
-    y_pred_edge = K.conv2d(y_pred_2d, kernel=edge_kernel, data_format="channels_last")
-    #
-    # edge_mse = K.mean(K.square(y_pred_edge - y_true_edge), axis=-1)
-    # edge_mse = K.print_tensor(edge_mse, message='edge_mse')
-    return mse
+    # print(K.int_shape(y_true_2d))
+    y_true_edge = K.batch_flatten(K.conv2d(y_true_2d, kernel=edge_kernel, data_format="channels_last"))
+    y_pred_edge = K.batch_flatten(K.conv2d(y_pred_2d, kernel=edge_kernel, data_format="channels_last"))
+
+    edge_mse = K.mean(K.square(y_pred_edge - y_true_edge), axis=-1)
+    return mse + 5e-3 * edge_mse
