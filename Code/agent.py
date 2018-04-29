@@ -25,6 +25,7 @@ class Agent(object):
 					load_path = self.params['trained_weights_path'])
 		else:
 			self.get_data()
+			print (self.x_train.shape[1:])
 			self.network = Autoencoder(input_shape = self.x_train.shape[1:], 
 												learning_r = params['learning_rate'])
 			self.network.save_model(self.trained_weights_path + 'model.h5',
@@ -38,7 +39,7 @@ class Agent(object):
 
 		file_list = os.listdir(self.params['data_path'])
 		file_list = [os.path.join(self.params['data_path'], i)
-				for i in file_list]
+				for i in file_list[5:10]]
 
 		# file_list = [self.params['data_path'] + 'keyboard_acoustic_000-091-075.wav']		
 		# file_list = [self.params['data_path'] + 'mallet_acoustic_000-091-075.wav']		
@@ -47,8 +48,19 @@ class Agent(object):
 
 		x_data = Spectrogram(filenames = file_list)
 
+		all_data = []
+		for spec in x_data.spectrogram:
+			spec_var = spec.reshape((2*257,251)).T
+			all_data.extend(spec_var)
+
+		all_data = np.array(all_data)
+
+		print (all_data.shape)
+
+		# pdb.set_trace()
+
 		# self.x_train = self.x_test = x_data.spectrogram
-		self.x_train, self.x_test = train_test_split(x_data.spectrogram,
+		self.x_train, self.x_test = train_test_split(all_data,
 														test_size=0.3)
 
 	def train(self):
@@ -84,7 +96,31 @@ class Agent(object):
 		# filenames = filenames[5:15]
 		for filename in filenames:
 			test_data = Spectrogram(filenames=[filename])
-			decoded_spectrogram = self.network.model.predict(test_data.spectrogram)
+
+			sliced_test_data = []
+			for spec in test_data.spectrogram:
+				spec_var = spec.reshape((2*257,251)).T
+				sliced_test_data.extend(spec_var)
+
+			sliced_test_data = np.array(sliced_test_data)
+
+			pdb.set_trace()
+
+			decoded_output = self.network.model.predict(sliced_test_data)
+
+			a1 = decoded_output[:, :257]
+			a2 = decoded_output[:, 257:]
+			
+			a = np.array([a1, a2])
+			decoded_spectrogram = np.moveaxis(a, 0, -1)
+			
+			# sliced_output = []
+			# for sliced in sliced_test_data:
+				
+			# 	sliced_output.append(decoded_slice)
+
+			# sliced_output = np.array(sliced_output)
+
 			#print_summary(self.network.model, line_length=80)
 			test_data.spectrogram_to_wav(filename=filename,
 										 spectrogram=copy.deepcopy(decoded_spectrogram))

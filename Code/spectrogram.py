@@ -215,7 +215,8 @@ class Spectrogram(object):
 			spectrogram.append(sgram)
 
 		# self.spectrogram = np.array(spectrogram) / self.max_const
-		spectrogram = np.array(spectrogram)
+		self.spectrogram = np.array(spectrogram)
+
 
 		
 		# spectrogram = []
@@ -228,7 +229,7 @@ class Spectrogram(object):
 		# pdb.set_trace()
 		# spectrogram = np.array(spectrogram) / self.max_const
 		# self.spectrogram = spectrogram.reshape(spectrogram.shape + (1,))
-		self.spectrogram = spectrogram.reshape((len(spectrogram), np.prod(spectrogram.shape[1:])))
+		# self.spectrogram = spectrogram.reshape((len(spectrogram), np.prod(spectrogram.shape[1:])))
 
 	def spectrogram_to_wav(self, filename, spectrogram, outfile="output.wav"):
 		dims = spectrogram.shape
