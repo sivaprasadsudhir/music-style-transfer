@@ -215,6 +215,7 @@ class Spectrogram(object):
 
 		# self.spectrogram = np.array(spectrogram) / self.max_const
 		spectrogram = np.array(spectrogram)
+		self.images = spectrogram
 
 
 		# spectrogram = []
@@ -227,10 +228,10 @@ class Spectrogram(object):
 		# pdb.set_trace()
 		# spectrogram = np.array(spectrogram) / self.max_const
 		# self.spectrogram = spectrogram.reshape(spectrogram.shape + (1,))
-		self.spectrogram = spectrogram.reshape((len(spectrogram), np.prod(spectrogram.shape[1:])))
+		self.spectrogram = spectrogram.reshape((len(spectrogram),
+								np.prod(spectrogram.shape[1:])))
 
 	def spectrogram_to_wav(self, filename, spectrogram, outfile="output.wav"):
-		# dims = spectrogram.shape
 		# print dims
 
 		print (filename)
@@ -243,7 +244,14 @@ class Spectrogram(object):
 		# pdb.set_trace()
 		# spec = spectrogram * self.max_const
 		# spec = spectrogram.reshape(spectrogram.shape[1:])
-		spec = spectrogram.reshape((n_freq, n_time, 2))
+		
+		spectrogram = spectrogram.reshape((1, n_freq, n_time, 2))
+		dims = spectrogram.shape
+		spectrogram = np.concatenate(
+				[spectrogram, np.zeros([dims[0], 1, dims[2], dims[3]])], 1)
+		spec = spectrogram.reshape((n_freq + 1, n_time, 2))
+
+		# spec = spectrogram.reshape((n_freq, n_time, 2))
 		# if self.pad:
 			# spec = tf.concat([spec, tf.zeros([1, dims[1], dims[2]])], 0)
 		audio = ispecgram(spec,
