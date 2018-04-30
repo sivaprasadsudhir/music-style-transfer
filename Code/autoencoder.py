@@ -24,9 +24,6 @@ class SharedAutoencoder(object):
 			self.define_entire_network(input_shape, learning_r)
 
 	def define_entire_network(self, input_shape, learning_r):
-		# this is the size of our encoded representations
-		# 32 floats -> compression of factor 24.5,
-		# assuming the input is 784 floats
 		self.encoding_dim = 16
 
 		# this is our input placeholder
@@ -36,9 +33,9 @@ class SharedAutoencoder(object):
 
 		# "encoded" is the encoded representation of the input
 		encoded = Dense(256, activation='relu')(self.input)
-		encoded = Dense(128, activation='relu')(self.input)
-		encoded = Dense(64, activation='relu')(self.input)
-		encoded = Dense(32, activation='relu')(self.input)
+		encoded = Dense(128, activation='relu')(encoded)
+		encoded = Dense(64, activation='relu')(encoded)
+		encoded = Dense(32, activation='relu')(encoded)
 		self.encoded = Dense(16, activation='relu')(encoded)
 
 		# "decoded" is the lossy reconstruction of the input for instrument 1
@@ -66,7 +63,7 @@ class SharedAutoencoder(object):
 		self.model.compile(optimizer=Adam(lr=learning_r),
 						   loss=edge_regularized_mse,
 						   metrics=['mse'])
-		# print_summary(self.model, line_length=80)
+		print_summary(self.model, line_length=80)
 
 	def define_encoder_network(self):
 		# this model maps an input to its encoded representation

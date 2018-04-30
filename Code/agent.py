@@ -2,6 +2,7 @@ from keras.callbacks import ModelCheckpoint, EarlyStopping
 
 from autoencoder import SharedAutoencoder
 from spectrogram import Spectrogram
+from utils import create_folder
 
 from sklearn.model_selection import train_test_split
 from keras.utils import print_summary
@@ -42,7 +43,7 @@ class SharedAgent(object):
 		file_list = json.load(f)
 		f.close()
 
-		# file_list = [filename for filename in file_list[0:20]]
+		file_list = file_list[0:20]
 
 		file_train, file_test = train_test_split(file_list, test_size=0.3, random_state=0)
 
@@ -105,15 +106,17 @@ class SharedAgent(object):
 			keyboard_out, mallet_out = np.split(decoded_spectrogram[0], 2)
 			# pdb.set_trace()
 			#print_summary(self.network.model, line_length=80)
+			outdir = "../Outputs/tmp/"
+			create_folder(outdir)
 			test_data.spectrogram_to_wav(filename=filename,
 								spectrogram=copy.deepcopy(keyboard_out),
-								outfile=filename.split("/")[-1])
+								outfile=outdir+filename.split("/")[-1])
 			# test_data.visualize(filename=filename,
 			#                     spectrogram=keyboard_out)
 			test_data.spectrogram_to_wav(
 					filename=filename.replace("keyboard", "mallet", 2),
 					spectrogram=copy.deepcopy(mallet_out),
-					outfile=filename.replace("keyboard", "mallet", 2).split("/")[-1])
+					outfile=outdir+filename.replace("keyboard", "mallet", 2).split("/")[-1])
 			# test_data.visualize(
 			# 		filename=filename.replace("keyboard", "mallet", 2),
 			# 		spectrogram = mallet_out)
