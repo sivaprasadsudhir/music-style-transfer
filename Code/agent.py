@@ -43,11 +43,11 @@ class SharedAgent(object):
 		file_list = json.load(f)
 		f.close()
 
-		file_list = file_list[0:20]
+		# file_list = file_list[0:20]
 
 		file_train, file_test = train_test_split(file_list, test_size=0.3, random_state=0)
 
-		print(file_test)
+		# print(file_test)
 
 		good_mallet_file_list = [filename.replace("keyboard_", "mallet_", 2)
 									for filename in file_train]
@@ -108,18 +108,18 @@ class SharedAgent(object):
 			#print_summary(self.network.model, line_length=80)
 			outdir = "../Outputs/tmp/"
 			create_folder(outdir)
-			test_data.spectrogram_to_wav(filename=filename,
-								spectrogram=copy.deepcopy(keyboard_out),
-								outfile=outdir+filename.split("/")[-1])
+			# test_data.spectrogram_to_wav(filename=filename,
+			# 					spectrogram=copy.deepcopy(keyboard_out),
+			# 					outfile=outdir+filename.split("/")[-1])
 			# test_data.visualize(filename=filename,
 			#                     spectrogram=keyboard_out)
 			test_data.spectrogram_to_wav(
 					filename=filename.replace("keyboard", "mallet", 2),
 					spectrogram=copy.deepcopy(mallet_out),
 					outfile=outdir+filename.replace("keyboard", "mallet", 2).split("/")[-1])
-			# test_data.visualize(
-			# 		filename=filename.replace("keyboard", "mallet", 2),
-			# 		spectrogram = mallet_out)
+			test_data.visualize(
+					filename=filename.replace("keyboard", "mallet", 2),
+					spectrogram = mallet_out)
 
 	def load_network(self):
 		if eval(self.params['load_weights']):
