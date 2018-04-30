@@ -232,8 +232,6 @@ class Spectrogram(object):
 								np.prod(spectrogram.shape[1:])))
 
 	def spectrogram_to_wav(self, filename, spectrogram, outfile="output.wav"):
-		# print dims
-
 		print (filename)
 		audio, _ = librosa.load(filename, sr=self.sample_rate)
 		sgram = specgram(audio)
@@ -287,14 +285,11 @@ class Spectrogram(object):
 
 		# if spectrogram != None:
 		# spectrogram *= self.max_const
-		print(spectrogram.shape)
 		# pdb.set_trace()
 		spectrogram = spectrogram.reshape((1, n_freq, n_time, 2))
 		spectrogram = normalize(spectrogram[0, :, :, 0], spectrogram[0, :, :, 1])
-		print(spectrogram.shape)
 		spectrogram = np.reshape(spectrogram, (len(frequencies),
 									len(times)))
-		print(spectrogram.shape)
 		ax = plt.subplot(122)
 		plt.pcolormesh(times, frequencies, spectrogram)
 		plt.imshow(spectrogram)
