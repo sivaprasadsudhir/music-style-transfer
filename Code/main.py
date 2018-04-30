@@ -18,7 +18,7 @@ def main(args):
 	if eval(params['train']):
 		agent.train()
 	else:
-		agent.test()
+		agent.test_split()
 
 if __name__ == '__main__':
 	main(sys.argv)

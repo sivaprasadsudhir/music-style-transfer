@@ -97,26 +97,117 @@ class SharedAgent(object):
 				'model_weights.h5')
 
 	def test(self):
+
+		length_in_sec = 631
+
 		for filename in self.params['test_data_path']:
 			test_data = Spectrogram(filenames=[filename])
-			decoded_spectrogram = self.network.model.predict(
-					test_data.spectrogram)
 
-			keyboard_out, mallet_out = np.split(decoded_spectrogram[0], 2)
 			# pdb.set_trace()
-			#print_summary(self.network.model, line_length=80)
-			test_data.spectrogram_to_wav(filename=filename,
-								spectrogram=copy.deepcopy(keyboard_out),
-								outfile=filename.split("/")[-1])
-			# test_data.visualize(filename=filename,
-			#                     spectrogram=keyboard_out)
+
+			a = test_data.spectrogram.reshape(1, 257, length_in_sec, 2)
+			mallet_out_full = []
+			x = a.shape[2]/55
+			# for i in xrange(1, a.shape[2]/x):
+			for i in xrange(1, 2):
+				test_spectrogram = a[:, :, x*(i-1) : x*(i-1) + 251 , :]
+				test_spectrogram = test_spectrogram.reshape(len(test_spectrogram), np.prod(test_spectrogram.shape[1:]))
+				decoded_spectrogram = self.network.model.predict(
+					test_spectrogram)
+
+				keyboard_out, mallet_out = np.split(decoded_spectrogram[0], 2)
+			
+				# This code stitches the sliced mallet output consecutively
+				# sliced_mallet = mallet_out.reshape(1, 257, 251, 2)
+				# sliced_mallet = sliced_mallet[:, :, :x, :]
+				# mallet_out_full.extend(sliced_mallet.reshape(len(sliced_mallet), np.prod(sliced_mallet.shape[1:]))[0])
+
+				mallet_out_full.extend(keyboard_out)
+				# This code adds t
+
+				# print (i)
+				# print (x*(i-1), x*(i-1) + 251)
+
+				print (x*i + 251, a.shape[2])
+				if x*i + 251 > a.shape[2]:
+					break
+				# print ()
+				# pdb.set_trace()
+				# mallet_out_full
+				# pdb.set_trace()
+				#print_summary(self.network.model, line_length=80)
+				
+				# test_data.spectrogram_to_wav(filename=filename,
+				# 					spectrogram=copy.deepcopy(keyboard_out),
+				# 					outfile=filename.split("/")[-1])
+				
+				# test_data.visualize(filename=filename,
+				#                     spectrogram=keyboard_out)
+
+			# print (i)
+			# pdb.set_trace()
+
+			mallet_out_full = np.array(mallet_out_full)
+
 			test_data.spectrogram_to_wav(
+					filename=filename,
+					spectrogram=copy.deepcopy(mallet_out_full),
+					)
+
+			
+			test_data.visualize(
 					filename=filename.replace("keyboard", "mallet", 2),
-					spectrogram=copy.deepcopy(mallet_out),
-					outfile=filename.replace("keyboard", "mallet", 2).split("/")[-1])
-			# test_data.visualize(
-			# 		filename=filename.replace("keyboard", "mallet", 2),
-			# 		spectrogram = mallet_out)
+					spectrogram = mallet_out_full)
+
+	def test_split(self):
+
+		x = 33
+		all_mallet = []
+		for filename in self.params['test_data_path']:
+		# filenames = filenames[5:15]
+		# for filename in filenames:
+			for i in xrange(1, 10):
+				# test_spectrogram = a[:, :, x*(i-1) : x*(i-1) + 251 , :]
+
+				print(filename)
+				test_data = Spectrogram(filenames=[filename])
+				a = test_data.spectrogram.reshape(1, 257, 631, 2)
+
+				first_spec = a[:, :, x*(i-1):x*i, :]
+				zero_spec = np.zeros((1,257,251-x,2))
+
+				new_spec = np.concatenate([first_spec, zero_spec], axis=2)
+				
+				new_spec = new_spec.reshape(len(new_spec), np.prod(new_spec.shape[1:]))
+				decoded_spectrogram = self.network.model.predict(new_spec)
+
+				keyboard_out, mallet_out = np.split(decoded_spectrogram[0], 2)
+
+				all_mallet.append(mallet_out)
+
+		# pdb.set_trace()
+
+		mallet_so_far = []
+		for mallet in all_mallet:
+			mallet = mallet.reshape(1,257,251,2)
+			mallet_so_far.append(mallet[:,:,:x,:])
+
+		output = np.concatenate(mallet_so_far, axis=2)
+		if 251 > output.shape[2]:
+			zero_spec = np.zeros((1,257,251 - output.shape[2],2))
+			output = np.concatenate([output, zero_spec], axis=2)
+			output = output.reshape(len(output), np.prod(output.shape[1:]))
+
+		pdb.set_trace()
+
+		test_data.spectrogram_to_wav(
+				filename=filename,
+				spectrogram=copy.deepcopy(output),
+				)
+		test_data.visualize(
+				filename=filename,
+				spectrogram = output)
+
 
 	def load_network(self):
 		if eval(self.params['load_weights']):

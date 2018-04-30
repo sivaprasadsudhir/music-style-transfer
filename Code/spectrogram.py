@@ -216,7 +216,7 @@ class Spectrogram(object):
 		# self.spectrogram = np.array(spectrogram) / self.max_const
 		spectrogram = np.array(spectrogram)
 
-
+		print (spectrogram.shape)
 		# spectrogram = []
 		# for fname in filenames:
 		# 	# print(fname)
@@ -237,10 +237,14 @@ class Spectrogram(object):
 
 		print (n_freq, n_time)
 
+		# n_time = np.ceil(n_time/251.)*251
+		# print spectrogram.shape
+		# pdb.set_trace()
+		# n_time = spectrogram.shape[1]/n_freq/2
 		# pdb.set_trace()
 		# spec = spectrogram * self.max_const
 		# spec = spectrogram.reshape(spectrogram.shape[1:])
-		spec = spectrogram.reshape((n_freq, n_time, 2))
+		spec = spectrogram.reshape((n_freq, spectrogram.shape[2], 2))
 		# if self.pad:
 			# spec = tf.concat([spec, tf.zeros([1, dims[1], dims[2]])], 0)
 		audio = ispecgram(spec,
@@ -277,6 +281,10 @@ class Spectrogram(object):
 		# if spectrogram != None:
 		# spectrogram *= self.max_const
 		# pdb.set_trace()
+		# n_time = n_time - n_time % 251
+		n_time = 297
+		# n_time = spectrogram.shape[1]/n_freq/2
+		times = range(n_time)
 		spectrogram = spectrogram.reshape((1, n_freq, n_time, 2))
 		spectrogram = normalize(spectrogram[0, :, :, 0], spectrogram[0, :, :, 1])
 		spectrogram = np.reshape(spectrogram, (len(frequencies),

@@ -36,9 +36,9 @@ class SharedAutoencoder(object):
 
 		# "encoded" is the encoded representation of the input
 		encoded = Dense(256, activation='relu')(self.input)
-		encoded = Dense(128, activation='relu')(self.input)
-		encoded = Dense(64, activation='relu')(self.input)
-		encoded = Dense(32, activation='relu')(self.input)
+		encoded = Dense(128, activation='relu')(encoded)
+		encoded = Dense(64, activation='relu')(encoded)
+		encoded = Dense(32, activation='relu')(encoded)
 		self.encoded = Dense(16, activation='relu')(encoded)
 
 		# "decoded" is the lossy reconstruction of the input for instrument 1
