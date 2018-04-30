@@ -1,4 +1,4 @@
-from agent import SharedAgent
+from agent import Agent
 from utils import *
 
 import json
@@ -13,7 +13,7 @@ def main(args):
 
 	create_folder(params['trained_weights_path'])
 
-	agent = SharedAgent(params)
+	agent = Agent(params)
 
 	if eval(params['train']):
 		agent.train()

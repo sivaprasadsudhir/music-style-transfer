@@ -11,7 +11,7 @@ import pdb
 from loss import regularized_mse, edge_regularized_mse
 
 
-class SharedAutoencoder(object):
+class Autoencoder(object):
 
 	def __init__(self, load_model=False, input_shape = None,
 	             learning_r = None, load_path = None):
@@ -36,37 +36,28 @@ class SharedAutoencoder(object):
 
 		# "encoded" is the encoded representation of the input
 		encoded = Dense(256, activation='relu')(self.input)
-		encoded = Dense(128, activation='relu')(self.input)
-		encoded = Dense(64, activation='relu')(self.input)
-		encoded = Dense(32, activation='relu')(self.input)
+		encoded = Dense(128, activation='relu')(encoded)
+		encoded = Dense(64, activation='relu')(encoded)
+		encoded = Dense(32, activation='relu')(encoded)
 		self.encoded = Dense(16, activation='relu')(encoded)
 
 		# "decoded" is the lossy reconstruction of the input for instrument 1
-		decoded_1 = Dense(32, activation='relu')(self.encoded)
-		decoded_1 = Dense(64, activation='relu')(decoded_1)
-		decoded_1 = Dense(128, activation='relu')(decoded_1)
-		decoded_1 = Dense(256, activation='relu')(decoded_1)
-		self.decoded_1 = Dense(input_shape[0], activation='relu')(decoded_1)
-
-		# "decoded" is the lossy reconstruction of the input for instrument 2
-		decoded_2 = Dense(32, activation='relu')(self.encoded)
-		decoded_2 = Dense(64, activation='relu')(decoded_2)
-		decoded_2 = Dense(128, activation='relu')(decoded_2)
-		decoded_2 = Dense(256, activation='relu')(decoded_2)
-		self.decoded_2 = Dense(input_shape[0], activation='relu')(decoded_2)
-
-		self.merged_decoded = concatenate([self.decoded_1, self.decoded_2], axis=-1)
+		decoded = Dense(32, activation='relu')(self.encoded)
+		decoded = Dense(64, activation='relu')(decoded)
+		decoded = Dense(128, activation='relu')(decoded)
+		decoded = Dense(256, activation='relu')(decoded)
+		self.decoded = Dense(2, activation='relu')(decoded)
 
 		# this model maps an input to its reconstruction
-		self.model = Model(self.input, self.merged_decoded)
+		self.model = Model(self.input, self.decoded)
 
 		self.define_decoder_network()
 		self.define_encoder_network()
 
 		self.model.compile(optimizer=Adam(lr=learning_r),
-						   loss=edge_regularized_mse,
+						   loss='mse',
 						   metrics=['mse'])
-		# print_summary(self.model, line_length=80)
+		print_summary(self.model, line_length=80)
 
 	def define_encoder_network(self):
 		# this model maps an input to its encoded representation

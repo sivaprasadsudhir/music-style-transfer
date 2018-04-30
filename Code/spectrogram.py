@@ -215,19 +215,12 @@ class Spectrogram(object):
 
 		# self.spectrogram = np.array(spectrogram) / self.max_const
 		spectrogram = np.array(spectrogram)
-
-
-		# spectrogram = []
-		# for fname in filenames:
-		# 	# print(fname)
-		# 	sample_rate, samples = wavfile.read(fname)
-		# 	frequencies, times, sgram = signal.spectrogram(samples, sample_rate)
-		# 	spectrogram.append(sgram)
+		self.spectrogram = spectrogram
 
 		# pdb.set_trace()
 		# spectrogram = np.array(spectrogram) / self.max_const
 		# self.spectrogram = spectrogram.reshape(spectrogram.shape + (1,))
-		self.spectrogram = spectrogram.reshape((len(spectrogram), np.prod(spectrogram.shape[1:])))
+		# self.spectrogram = spectrogram.reshape((len(spectrogram), np.prod(spectrogram.shape[1:])))
 
 	def spectrogram_to_wav(self, filename, spectrogram, outfile="output.wav"):
 		print (filename)
