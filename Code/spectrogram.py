@@ -242,9 +242,10 @@ class Spectrogram(object):
 		# pdb.set_trace()
 		# n_time = spectrogram.shape[1]/n_freq/2
 		# pdb.set_trace()
+		n_time = 251
 		# spec = spectrogram * self.max_const
 		# spec = spectrogram.reshape(spectrogram.shape[1:])
-		spec = spectrogram.reshape((n_freq, spectrogram.shape[2], 2))
+		spec = spectrogram.reshape((n_freq, -1, 2))
 		# if self.pad:
 			# spec = tf.concat([spec, tf.zeros([1, dims[1], dims[2]])], 0)
 		audio = ispecgram(spec,
@@ -282,13 +283,12 @@ class Spectrogram(object):
 		# spectrogram *= self.max_const
 		# pdb.set_trace()
 		# n_time = n_time - n_time % 251
-		n_time = 297
+		# n_time = 251
 		# n_time = spectrogram.shape[1]/n_freq/2
 		times = range(n_time)
-		spectrogram = spectrogram.reshape((1, n_freq, n_time, 2))
+		spectrogram = spectrogram.reshape((1, n_freq, -1, 2))
 		spectrogram = normalize(spectrogram[0, :, :, 0], spectrogram[0, :, :, 1])
-		spectrogram = np.reshape(spectrogram, (len(frequencies),
-									len(times)))
+		spectrogram = np.reshape(spectrogram, (len(frequencies), -1))
 		ax = plt.subplot(122)
 		plt.pcolormesh(times, frequencies, spectrogram)
 		plt.imshow(spectrogram)
