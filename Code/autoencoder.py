@@ -46,7 +46,7 @@ class Autoencoder(object):
 		decoded = Dense(64, activation='relu')(decoded)
 		decoded = Dense(128, activation='relu')(decoded)
 		decoded = Dense(256, activation='relu')(decoded)
-		self.decoded = Dense(2, activation='relu')(decoded)
+		self.decoded = Dense(input_shape[0], activation='relu')(decoded)
 
 		# this model maps an input to its reconstruction
 		self.model = Model(self.input, self.decoded)
@@ -75,14 +75,18 @@ class Autoencoder(object):
 		# create the decoder model
 		# self.decoder = Model(encoded_input, decoded_output)
 
-	def save_model_weights(self, model_path):
+	def save_model_weights(self, model_path, encoder_path):
 		self.model.save_weights(model_path)
+		self.encoder.save_weights(encoder_path)
 
-	def load_model_weights(self, model_path):
+	def load_model_weights(self, model_path, encoder_path):
 		self.model.load_weights(model_path)
+		self.encoder.load_weights(encoder_path)
 
 	def save_model(self, model_path, encoder_path, decoder_path):
 		self.model.save(model_path)
+		self.encoder.save(encoder_path)
 
 	def load_model(self, model_path, encoder_path, decoder_path):
 		self.model = load_model(model_path, custom_objects={'regularized_mse': regularized_mse, 'edge_regularized_mse': edge_regularized_mse})
+		self.encoder = load_model(encoder_path, custom_objects={'regularized_mse': regularized_mse, 'edge_regularized_mse': edge_regularized_mse})
