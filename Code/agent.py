@@ -108,11 +108,11 @@ class SharedAgent(object):
 			#print_summary(self.network.model, line_length=80)
 			outdir = "../Outputs/tmp/"
 			create_folder(outdir)
-			# test_data.spectrogram_to_wav(filename=filename,
-			# 					spectrogram=copy.deepcopy(keyboard_out),
-			# 					outfile=outdir+filename.split("/")[-1])
-			# test_data.visualize(filename=filename,
-			#                     spectrogram=keyboard_out)
+			test_data.spectrogram_to_wav(filename=filename,
+								spectrogram=copy.deepcopy(keyboard_out),
+								outfile=outdir+filename.split("/")[-1])
+			test_data.visualize(filename=filename,
+			                    spectrogram=keyboard_out)
 			test_data.spectrogram_to_wav(
 					filename=filename.replace("keyboard", "mallet", 2),
 					spectrogram=copy.deepcopy(mallet_out),

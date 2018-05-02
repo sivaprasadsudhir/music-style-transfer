@@ -279,10 +279,13 @@ class Spectrogram(object):
 		ax = plt.subplot(121)
 		plt.pcolormesh(times, frequencies, sgram)
 		plt.imshow(sgram)
-		plt.ylabel('Frequency [Hz]')
-		plt.xlabel('Time [sec]')
-		ax.set_title("input")
-
+		plt.ylabel('Frequency')
+		plt.xlabel('Time')
+		plt.title("Input")
+		plt.xticks()
+		plt.yticks()
+		# plt.show()
+		
 		# if spectrogram != None:
 		# spectrogram *= self.max_const
 		# pdb.set_trace()
@@ -293,9 +296,11 @@ class Spectrogram(object):
 		ax = plt.subplot(122)
 		plt.pcolormesh(times, frequencies, spectrogram)
 		plt.imshow(spectrogram)
-		plt.ylabel('Frequency [Hz]')
-		plt.xlabel('Time [sec]')
-		ax.set_title('output')
-
-		plt.suptitle("filename: {}".format(filename))
+		plt.ylabel('Frequency')
+		plt.xlabel('Time')
+		plt.title('Output')
+		plt.xticks()
+		plt.yticks()
 		plt.show()
+
+		# plt.suptitle("filename: {}".format(filename))
